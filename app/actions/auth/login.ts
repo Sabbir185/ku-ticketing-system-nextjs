@@ -63,7 +63,17 @@ export async function loginAction(formData: FormData) {
         success: true,
         data: userData?.data,
       };
-    } else {
+    } else if (userData?.data?.role === "EMPLOYEE") {
+      return {
+        success: true,
+        data: userData?.data,
+      };
+    }else if (userData?.data?.role === "USER") {
+       return {
+         success: true,
+         data: userData?.data,
+       }   
+    }else {
       return {
         success: false,
         message: "You are not authorized to access this page",

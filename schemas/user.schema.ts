@@ -27,14 +27,7 @@ export const UserSchema = z.object({
   image: z.string().url().optional().nullable(),
   address: z.string().optional().nullable(),
   department: z.string().optional().nullable(),
-  designation: z.string().optional().nullable(),
-  position: z
-    .object({
-      lat: z.number(),
-      lng: z.number(),
-    })
-    .optional()
-    .nullable(),
+
   status: UserStatusEnum.default("ACTIVE"),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
@@ -55,10 +48,10 @@ export const CreateUserWithOtpSchema = z
     password: z
       .string()
       .min(6, { message: "Password must be at least 6 characters" }),
-    designation: z.string().optional(),
+    // designation: z.string().optional(),
     department: z.string().optional(),
-    otp: z.string().length(6, { message: "OTP must be 6 digits" }),
-    fcm_token: z.string().optional(),
+    // otp: z.string().length(6, { message: "OTP must be 6 digits" }),
+    // fcm_token: z.string().optional(),
   })
   .strict();
 
@@ -78,9 +71,6 @@ export const UpdateUserProfileSchema = z
       .optional(),
     department: z
       .string({ invalid_type_error: "Department must be a string" })
-      .optional(),
-    designation: z
-      .string({ invalid_type_error: "Designation must be a string" })
       .optional(),
   })
   .strict();

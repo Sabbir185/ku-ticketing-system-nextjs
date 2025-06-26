@@ -25,11 +25,10 @@ export const verifyAuth = async (req: NextRequest) => {
           address: true,
           phone: true,
           department: true,
-          designation: true,
           isDeleted: true,
           status: true,
-          position: true,
-          fcm_token: true,
+          // position: true,
+          // fcm_token: true,
           password: false,
         },
       });

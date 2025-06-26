@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Syne, Inter } from "next/font/google";
 import "./globals.css";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-
+import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
@@ -39,8 +40,12 @@ export default function RootLayout({
       <body
         className={`${syne.variable} ${inter.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Toaster />
-        {children}
+        <TooltipProvider>
+          <Toaster position="top-right" closeButton richColors />
+          <AuthProvider>
+          {children}
+          </AuthProvider>
+        </TooltipProvider>
       </body>
     </html>
   );

@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       role: user.role,
     });
     const response = NextResponse.json(
-      { status: 200, error: false, msg: "Login successful" },
+      { status: 200, error: false, msg: "Login successful" , token},
       { status: 200 }
     );
     response.cookies.set(cookieName, token, {

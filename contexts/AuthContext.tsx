@@ -25,11 +25,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         if (userInfo?.success && userInfo?.data) {
           setUser(userInfo.data);
           if (userInfo?.data?.role === "ADMIN") {
-            router.push("/dashboard");
+            router.push("/admin");
+          }
+          if (userInfo?.data?.role === "EMPLOYEE") {
+            router.push("/employee");
+          }
+          if (userInfo?.data?.role === "USER") {
+            router.push("/user");
           }
         } else {
           setUser(null);
-          router.push("/login");
+          router.push("/");
         }
       } catch (error) {
         console.error("Error verifying user:", error);
@@ -45,9 +51,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(userData);
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
-    router.push("/login");
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    router.push("/");
   };
 
   return (
