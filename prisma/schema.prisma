@@ -27,7 +27,12 @@ model User {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   isDeleted   Boolean    @default(false)
+
+  // Relations
+  tickets          Ticket[] @relation("UserTickets")       // tickets created by this user
+  assignedTickets  Ticket[] @relation("EmployeeTickets")   // tickets assigned to this employee
 }
+
 
 model Otp {
   id        Int      @id @default(autoincrement())
@@ -49,6 +54,39 @@ model Setting {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model Ticket {
+  id          Int      @id @default(autoincrement())
+  uid         String    @default(uuid())
+  title       String
+  description String
+  status      String    @default("open")
+  priority    String    @default("normal")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+
+  // Creator
+  userId      Int
+  user        User @relation("UserTickets", fields: [userId], references: [id])
+
+  // Assigned employee (if any)
+  employeeId  Int?
+  employee    User? @relation("EmployeeTickets", fields: [employeeId], references: [id])
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tickets   Ticket[] // <-- opposite side of the relation
+}
+
 
 enum UserStatus {
   PENDING

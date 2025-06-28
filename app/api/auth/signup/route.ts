@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       email,
       phone,
       password,
+      otp,
       // department,
       // designation,
     } = validation.data;
@@ -43,29 +44,29 @@ export async function POST(request: NextRequest) {
     }
 
     // check if OTP is valid
-    // const optRecord = await prisma.otp.findFirst({
-    //   where: {
-    //     email: email.toLowerCase().trim(),
-    //     action: "signup",
-    //   },
-    // });
-    // if (!optRecord || optRecord.otp !== otp) {
-    //   return NextResponse.json(
-    //     { status: 400, error: true, msg: "Invalid OTP" },
-    //     { status: 400 }
-    //   );
-    // }
-    // const dateNow = Date.now();
-    // const otpExpired = new Date(optRecord.expiresAt).getTime();
-    // if (dateNow > otpExpired) {
-    //   return NextResponse.json(
-    //     { status: 400, error: true, msg: "OTP expired" },
-    //     { status: 400 }
-    //   );
-    // }
-    // await prisma.otp.deleteMany({
-    //   where: { email: email.toLowerCase().trim(), action: "signup" },
-    // });
+    const optRecord = await prisma.otp.findFirst({
+      where: {
+        email: email.toLowerCase().trim(),
+        action: "signup",
+      },
+    });
+    if (!optRecord || optRecord.otp !== otp) {
+      return NextResponse.json(
+        { status: 400, error: true, msg: "Invalid OTP" },
+        { status: 400 }
+      );
+    }
+    const dateNow = Date.now();
+    const otpExpired = new Date(optRecord.expiresAt).getTime();
+    if (dateNow > otpExpired) {
+      return NextResponse.json(
+        { status: 400, error: true, msg: "OTP expired" },
+        { status: 400 }
+      );
+    }
+    await prisma.otp.deleteMany({
+      where: { email: email.toLowerCase().trim(), action: "signup" },
+    });
 
     // create user
     const hashedPassword = await bcrypt.hash(password, 10);

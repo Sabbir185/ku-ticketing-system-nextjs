@@ -50,7 +50,7 @@ export const CreateUserWithOtpSchema = z
       .min(6, { message: "Password must be at least 6 characters" }),
     // designation: z.string().optional(),
     department: z.string().optional(),
-    // otp: z.string().length(6, { message: "OTP must be 6 digits" }),
+    otp: z.string().length(6, { message: "OTP must be 6 digits" }),
     // fcm_token: z.string().optional(),
   })
   .strict();

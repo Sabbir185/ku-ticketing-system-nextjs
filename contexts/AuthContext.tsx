@@ -15,6 +15,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  console.log("🚀 ~ AuthProvider ~ user:", user)
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -24,18 +25,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const userInfo = await profileAction();
         if (userInfo?.success && userInfo?.data) {
           setUser(userInfo.data);
-          if (userInfo?.data?.role === "ADMIN") {
-            router.push("/admin");
-          }
-          if (userInfo?.data?.role === "EMPLOYEE") {
-            router.push("/employee");
-          }
-          if (userInfo?.data?.role === "USER") {
-            router.push("/user");
-          }
         } else {
           setUser(null);
-          router.push("/");
+          // router.push("/");
         }
       } catch (error) {
         console.error("Error verifying user:", error);

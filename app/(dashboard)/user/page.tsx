@@ -1,5 +1,7 @@
 "use client"
+import Header from "@/components/dashboard/Header";
 import UserDashboard from "@/components/dashboard/UserDashboard";
+import { useAuth } from "@/contexts/AuthContext";
 import { Ticket, User } from "@/types/tickets";
 import React, { useState } from "react";
 const demoTickets: Ticket[] = [
@@ -45,13 +47,11 @@ const demoTickets: Ticket[] = [
 
 const Page = () => {
       const [tickets, setTickets] = useState<Ticket[]>([]);
-    
-   const user: User = {
-         id: Date.now().toString(),
-         email: `user@example.com`,
-         name: `Test user`,
-         role : "user"
-       };
+  const { logout, user, loading } = useAuth() as {
+    user: User;
+    loading: boolean;
+    logout: () => void;
+  };
          const handleCreateTicket = (ticketData: Omit<Ticket, 'id' | 'createdAt' | 'updatedAt' | 'comments'>) => {
            const newTicket: Ticket = {
              ...ticketData,
@@ -69,12 +69,17 @@ const Page = () => {
            // In a real app, this would navigate to a ticket detail page
          };
   return (
-    <UserDashboard
+    <>
+    <Header user={user} onLogout={logout} />
+
+     <UserDashboard
       user={user}
       tickets={demoTickets}
       onCreateTicket={handleCreateTicket}
       onViewTicket={handleViewTicket}
     />
+    </>
+   
   );
 };
 

@@ -1,5 +1,7 @@
 "use client"
 import EmployeeDashboard from "@/components/dashboard/EmployeDashboard";
+import Header from "@/components/dashboard/Header";
+import { useAuth } from "@/contexts/AuthContext";
 import { Ticket, User } from "@/types/tickets";
 import React from "react";
 const demoTickets: Ticket[] = [
@@ -44,13 +46,11 @@ const demoTickets: Ticket[] = [
 ];
 
 const Page = () => {
-    
-   const user: User = {
-         id: Date.now().toString(),
-         email: `employee@example.com`,
-         name: `Test employee`,
-         role : "employee"
-       };
+  const { logout, user, loading } = useAuth() as {
+    user: User;
+    loading: boolean;
+    logout: () => void;
+  };
       
        
          const handleViewTicket = (ticket: Ticket) => {
@@ -58,11 +58,15 @@ const Page = () => {
            // In a real app, this would navigate to a ticket detail page
          };
   return (
-    <EmployeeDashboard
+    <>
+    <Header user={user} onLogout={logout} />
+      <EmployeeDashboard
       user={user}
       tickets={demoTickets}
       onViewTicket={handleViewTicket}
     />
+    </>
+  
   );
 };
 
