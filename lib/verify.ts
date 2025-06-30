@@ -24,7 +24,7 @@ export const verifyAuth = async (req: NextRequest) => {
           updatedAt: true,
           address: true,
           phone: true,
-          department: true,
+          departments: true,
           isDeleted: true,
           status: true,
           // position: true,

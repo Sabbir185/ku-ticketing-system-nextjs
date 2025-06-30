@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Ticket, User } from '@/types/ticket';
 import TicketCard from './TicketCard';
 import { Users, Ticket as TicketIcon, Clock } from 'lucide-react';
+import { Ticket, User } from '@/types/tickets';
 
 interface EmployeeDashboardProps {
   user: User;
@@ -12,9 +12,9 @@ interface EmployeeDashboardProps {
 }
 
 const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardProps) => {
-  const assignedTickets = tickets.filter(ticket => ticket.assignedTo === user.id);
-  const unassignedTickets = tickets.filter(ticket => !ticket.assignedTo);
-  const inProgressTickets = tickets.filter(ticket => ticket.status === 'in-progress' && ticket.assignedTo === user.id);
+  const assignedTickets = tickets
+  const openTickets = tickets.filter(ticket => ticket.status === 'open');
+  const closedTickets = tickets.filter(ticket => ticket.status === 'closed');
 
   return (
     <div className="p-6 space-y-6">
@@ -35,20 +35,20 @@ const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardPro
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+            <CardTitle className="text-sm font-medium">Open</CardTitle>
             <Clock className="h-4 w-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">{inProgressTickets.length}</div>
+            <div className="text-2xl font-bold text-blue-600">{openTickets.length}</div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Unassigned</CardTitle>
+            <CardTitle className="text-sm font-medium">Closed</CardTitle>
             <TicketIcon className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-orange-600">{unassignedTickets.length}</div>
+            <div className="text-2xl font-bold text-orange-600">{closedTickets.length}</div>
           </CardContent>
         </Card>
       </div>
@@ -56,8 +56,8 @@ const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardPro
       <Tabs defaultValue="assigned" className="space-y-4">
         <TabsList>
           <TabsTrigger value="assigned">My Tickets</TabsTrigger>
-          <TabsTrigger value="unassigned">Unassigned</TabsTrigger>
-          <TabsTrigger value="all">All Tickets</TabsTrigger>
+          <TabsTrigger value="open">Open</TabsTrigger>
+          <TabsTrigger value="closed">Closed</TabsTrigger>
         </TabsList>
         
         <TabsContent value="assigned" className="space-y-4">
@@ -82,9 +82,9 @@ const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardPro
           )}
         </TabsContent>
         
-        <TabsContent value="unassigned" className="space-y-4">
+        <TabsContent value="open" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {unassignedTickets.map((ticket) => (
+            {openTickets.map((ticket) => (
               <TicketCard
                 key={ticket.id}
                 ticket={ticket}
@@ -94,9 +94,9 @@ const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardPro
           </div>
         </TabsContent>
         
-        <TabsContent value="all" className="space-y-4">
+        <TabsContent value="closed" className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tickets.map((ticket) => (
+            {closedTickets.map((ticket) => (
               <TicketCard
                 key={ticket.id}
                 ticket={ticket}

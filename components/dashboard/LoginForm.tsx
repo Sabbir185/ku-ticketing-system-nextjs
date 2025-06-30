@@ -53,6 +53,7 @@ const LoginForm = () => {
       formData.append("email", data.email);
       formData.append("password", data.password);
       const response = await loginAction(formData);
+      console.log("🚀 ~ onSubmit ~ response:", response)
       if (response?.success === false) {
         toast.error(response?.message || "Login failed. Please try again.", {
           style: {

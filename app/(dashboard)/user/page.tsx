@@ -1,85 +1,83 @@
-"use client"
+"use client";
+
+import { fetchUserTickets } from "@/app/actions/ticket/ticketActions";
 import Header from "@/components/dashboard/Header";
 import UserDashboard from "@/components/dashboard/UserDashboard";
+import TicketDetails from "@/components/ticketDetails";
 import { useAuth } from "@/contexts/AuthContext";
 import { Ticket, User } from "@/types/tickets";
-import React, { useState } from "react";
-const demoTickets: Ticket[] = [
-  {
-    id: "1",
-    title: "Login Issues",
-    description: "Cannot access my account after password reset",
-    priority: "high",
-    status: "open",
-    category: "technical",
-    createdBy: "user1",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-    comments: [],
-  },
-  {
-    id: "2",
-    title: "Billing Question",
-    description: "Need clarification on last month's invoice",
-    priority: "medium",
-    status: "in-progress",
-    category: "billing",
-    createdBy: "user2",
-    assignedTo: "employee1",
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-    comments: [],
-  },
-  {
-    id: "3",
-    title: "Feature Request",
-    description: "Would like to see dark mode option in the dashboard",
-    priority: "low",
-    status: "resolved",
-    category: "general",
-    createdBy: "user3",
-    assignedTo: "employee2",
-    createdAt: new Date(Date.now() - 259200000).toISOString(),
-    updatedAt: new Date(Date.now() - 172800000).toISOString(),
-    comments: [],
-  },
-];
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import React, { useEffect, useState } from "react";
 
 const Page = () => {
-      const [tickets, setTickets] = useState<Ticket[]>([]);
-  const { logout, user, loading } = useAuth() as {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { logout, user } = useAuth() as {
     user: User;
     loading: boolean;
     logout: () => void;
   };
-         const handleCreateTicket = (ticketData: Omit<Ticket, 'id' | 'createdAt' | 'updatedAt' | 'comments'>) => {
-           const newTicket: Ticket = {
-             ...ticketData,
-             id: Date.now().toString(),
-             createdAt: new Date().toISOString(),
-             updatedAt: new Date().toISOString(),
-             comments: []
-           };
-           
-           setTickets(prev => [newTicket, ...prev]);
-         };
-       
-         const handleViewTicket = (ticket: Ticket) => {
-           console.log('Viewing ticket:', ticket);
-           // In a real app, this would navigate to a ticket detail page
-         };
+
+  const getTickets = async () => {
+    setLoading(true);
+    const data = await fetchUserTickets(new FormData());
+    if (data.success) {
+      setTickets(data?.data?.docs || []);
+    }
+    setLoading(false);
+    
+  };
+
+  useEffect(() => {
+    getTickets();
+  }, []);
+
+  const handleCreateTicket = (
+    ticketData: Omit<Ticket, "id" | "createdAt" | "updatedAt" | "comments">
+  ) => {
+    const newTicket: Ticket = {
+      ...ticketData,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      comments: [],
+    };
+    setTickets((prev) => [newTicket, ...prev]);
+  };
+
+  const handleViewTicket = (ticket: Ticket) => {
+    setSelectedTicket(ticket);
+  };
+
   return (
     <>
-    <Header user={user} onLogout={logout} />
+      <Header user={user} onLogout={logout} />
 
-     <UserDashboard
-      user={user}
-      tickets={demoTickets}
-      onCreateTicket={handleCreateTicket}
-      onViewTicket={handleViewTicket}
-    />
+      <UserDashboard
+        user={user}
+        tickets={tickets}
+        onCreateTicket={handleCreateTicket}
+        onViewTicket={handleViewTicket}
+      />
+
+      <Dialog
+        open={!!selectedTicket}
+        onOpenChange={() => setSelectedTicket(null)}
+      >
+        <DialogContent className="!max-w-4xl !w-full">
+          <DialogHeader>
+            <DialogTitle>Ticket Details</DialogTitle>
+          </DialogHeader>
+          {selectedTicket && <TicketDetails isUser={true} data={selectedTicket}  />}
+        </DialogContent>
+      </Dialog>
     </>
-   
   );
 };
 

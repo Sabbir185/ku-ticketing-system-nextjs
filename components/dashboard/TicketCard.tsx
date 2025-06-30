@@ -33,40 +33,39 @@ const TicketCard = ({ ticket, onViewTicket, showAssignee = false }: TicketCardPr
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
+    <Card className="hover:shadow-md transition-shadow duration-200 border-none">
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <CardTitle className="text-lg font-semibold text-gray-900 line-clamp-1">
-            {ticket.title}
+            {ticket?.title}
           </CardTitle>
           <div className="flex space-x-2">
-            <Badge variant={getPriorityColor(ticket.priority)}>
-              {ticket.priority}
+            <Badge variant={getPriorityColor(ticket?.priority)}>
+              {ticket?.priority}
             </Badge>
-            <Badge variant={getStatusColor(ticket.status)}>
-              {ticket.status.replace('-', ' ')}
+            <Badge variant={getStatusColor(ticket?.status)}>
+              {ticket?.status?.replace('-', ' ')}
             </Badge>
           </div>
         </div>
       </CardHeader>
       <CardContent className="pt-0">
         <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-          {ticket.description}
+          {ticket?.description}
         </p>
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
-          <span>Created: {new Date(ticket.createdAt).toLocaleDateString()}</span>
-          <span className="capitalize">{ticket.category.replace('-', ' ')}</span>
+          <span>Created: {new Date(ticket?.createdAt).toLocaleDateString()}</span>
+          <span className="capitalize">{ticket?.category?.name}</span>
         </div>
-        {showAssignee && ticket.assignedTo && (
+        {showAssignee && ticket?.assignedTo && (
           <div className="text-xs text-gray-500 mb-4">
-            Assigned to: {ticket.assignedTo}
+            Assigned to: {ticket?.assignedTo}
           </div>
         )}
         <Button 
-          variant="outline" 
           size="sm" 
           onClick={() => onViewTicket(ticket)}
-          className="w-full"
+          className="w-full cursor-pointer"
         >
           View Details
         </Button>

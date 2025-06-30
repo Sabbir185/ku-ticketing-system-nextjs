@@ -22,7 +22,8 @@ model User {
   role        Roles      @default(USER)
   image       String?
   address     String?
-  department  String?
+  
+  departments     Category[]   @relation("UserDepartments")
   status      UserStatus @default(ACTIVE)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -59,6 +60,9 @@ model Ticket {
   id          Int      @id @default(autoincrement())
   uid         String    @default(uuid())
   title       String
+  file        String?
+  reply       String?
+  replyFile   String?
   description String
   status      String    @default("open")
   priority    String    @default("normal")
@@ -83,7 +87,8 @@ model Category {
   name      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  // New relation: users in this department
+  users     User[]   @relation("UserDepartments")
   tickets   Ticket[] // <-- opposite side of the relation
 }
 
@@ -98,5 +103,5 @@ enum UserStatus {
 enum Roles {
   USER
   ADMIN
-  SUPER_ADMIN
+  EMPLOYEE
 }

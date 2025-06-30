@@ -1,116 +1,115 @@
 "use client"
-import TicketCard from '@/components/dashboard/TicketCard'
-import { Tabs, TabsContent, TabsTrigger } from '@/components/ui/tabs'
+import { deleteTicket, fetchEmployeeTickets } from '@/app/actions/ticket/ticketActions';
+import { DataTable } from '@/components/DataTable';
 import { Ticket } from '@/types/tickets';
-import { TabsList } from '@radix-ui/react-tabs'
-import React from 'react'
-const tickets: Ticket[] = [
-  {
-    id: "1",
-    title: "Login Issues",
-    description: "Cannot access my account after password reset",
-    priority: "high",
-    status: "open",
-    category: "technical",
-    createdBy: "user1",
-    createdAt: new Date(Date.now() - 86400000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-    comments: [],
-  },
-  {
-    id: "2",
-    title: "Billing Question",
-    description: "Need clarification on last month's invoice",
-    priority: "medium",
-    status: "in-progress",
-    category: "billing",
-    createdBy: "user2",
-    assignedTo: "employee1",
-    createdAt: new Date(Date.now() - 172800000).toISOString(),
-    updatedAt: new Date(Date.now() - 86400000).toISOString(),
-    comments: [],
-  },
-  {
-    id: "3",
-    title: "Feature Request",
-    description: "Would like to see dark mode option in the dashboard",
-    priority: "low",
-    status: "resolved",
-    category: "general",
-    createdBy: "user3",
-    assignedTo: "employee2",
-    createdAt: new Date(Date.now() - 259200000).toISOString(),
-    updatedAt: new Date(Date.now() - 172800000).toISOString(),
-    comments: [],
-  },
-];
-const onViewTicket = (ticket: Ticket) => {
-  console.log('Viewing ticket:', ticket);
-  // In a real app, this would navigate to a ticket detail page
-}
+import { Category } from '@prisma/client';
+import { Edit, Trash2, View } from 'lucide-react';
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
+
 const page = () => {
+    const [tickets, setTickets] = useState<Ticket[]>([]);
+    const router = useRouter();
+    const getTickets = async () => {
+      const data = await fetchEmployeeTickets();
+      if (data.success) {
+        setTickets(data?.data || []);
+      }
+    };
+  
+    useEffect(() => {
+      getTickets();
+    }, []);
+
+  const columns = [
+    {
+      accessorKey: "title",
+      header: "Title",
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: "user",
+      header: "User",
+      enableSorting: false,
+      enableHiding: false,
+      cell: ({ cell }: { cell: any }) => {
+        const user = cell.row.original;
+        console.log("🚀 ~ page ~ user:", user)
+        return <p>{user?.user?.name}</p>;
+      }      
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      enableSorting: false,
+      enableHiding: false,
+      cell: ({ cell }) => {
+        const category = cell.row.original;
+        return <p>{category?.category?.name}</p>;
+      },
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      enableSorting: false,
+      enableHiding: false,
+      cell: ({ cell }) => {
+        const status = cell.row.original;
+        return <p className={status?.status === "open" ? "text-green-500 capitalize" : "text-red-500 capitalize"}>{status?.status}</p>;
+      }
+    },{
+      accessorKey: "priority",
+      header: "Priority",
+      enableSorting: false,
+      enableHiding: false,
+      cell: ({ cell }) => {
+        const priority = cell.row.original;
+        return <p className='capitalize'>{priority?.priority}</p>;
+      },
+    }
+  ];
+
+  const rowActions = [
+    {
+      label: "View",
+      icon: <View className="h-4 w-4" />,
+      onClick: (row: Category) => router.push(`/admin/tickets/${row.id}`),
+    },
+    {
+      label: "Delete",
+      icon: <Trash2 className="h-4 w-4" />,
+      onClick: (row: Category) => handleDelete(row.id),
+    },
+  ];
+  const handleDelete = async (id: string) => {
+    const confirmDelete = confirm("Are you sure you want to delete this ticket?");
+    if (confirmDelete) {
+      const fd = new FormData();
+      fd.append("id", id);
+      const res = await deleteTicket(fd);
+      if (res?.success) {
+        toast.success(res?.message || "Ticket deleted successfully");
+        getTickets();
+      } else {
+        toast.error(res?.message || "Failed to delete ticket",);
+      }
+    }
+  };
+
   return (
      <div className="space-y-4">
-            <Tabs defaultValue="all" className="space-y-4">
-              <TabsList>
-                <TabsTrigger value="all">All Tickets</TabsTrigger>
-                <TabsTrigger value="open">Open</TabsTrigger>
-                <TabsTrigger value="progress">In Progress</TabsTrigger>
-                <TabsTrigger value="resolved">Resolved</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="all" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tickets.map((ticket) => (
-                    <TicketCard
-                      key={ticket.id}
-                      ticket={ticket}
-                      onViewTicket={onViewTicket}
-                      showAssignee={true}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="open" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tickets.map((ticket) => (
-                    <TicketCard
-                      key={ticket.id}
-                      ticket={ticket}
-                      onViewTicket={onViewTicket}
-                      showAssignee={true}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="progress" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tickets.map((ticket) => (
-                    <TicketCard
-                      key={ticket.id}
-                      ticket={ticket}
-                      onViewTicket={onViewTicket}
-                      showAssignee={true}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="resolved" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {tickets.map((ticket) => (
-                    <TicketCard
-                      key={ticket.id}
-                      ticket={ticket}
-                      onViewTicket={onViewTicket}
-                      showAssignee={true}
-                    />
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+             <DataTable
+                    title="tickets"
+                    data={tickets}
+                    columns={columns}
+                    rowActions={rowActions}
+                    // isLoading={loading}
+                    // tableActions={tableActions}
+                    showSerialNumbers
+                  />
           </div>
   )
 }

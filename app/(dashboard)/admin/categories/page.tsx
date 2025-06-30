@@ -45,12 +45,13 @@ const CategoryManagement = () => {
     const fd = new FormData();
     fd.append("name", formData.name);
 
-    let response = {}
+    type CategoryResponse = { success: boolean; message?: string };
+    let response: CategoryResponse;
     if(editingCategory) {
       fd.append("id", editingCategory.id);
-      response = await updateCategory(fd);
+      response = await updateCategory(fd) as CategoryResponse;
     }else{
-      response = await createCategory(fd);
+      response = await createCategory(fd) as CategoryResponse;
     }
 
     if (response?.success) {
@@ -90,7 +91,7 @@ const CategoryManagement = () => {
       header: "Name",
       enableSorting: false,
       enableHiding: false,
-    },
+    }
   ];
 
   const rowActions = [

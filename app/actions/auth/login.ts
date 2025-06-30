@@ -49,6 +49,7 @@ export async function loginAction(formData: FormData) {
         Authorization: `Bearer ${authToken}`,
       },
     });
+    console.log("🚀 ~ loginAction ~ user:", user)
     const userData = await user.json();
 
     if (userData?.error) {

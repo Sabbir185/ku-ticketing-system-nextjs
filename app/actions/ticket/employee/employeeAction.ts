@@ -1,7 +1,7 @@
 "use server";
 import { cookies } from "next/headers";
 
-export async function fetchCategory() {
+export async function fetchEmployee() {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
@@ -11,24 +11,24 @@ export async function fetchCategory() {
         message: "Authentication token not found",
       };
     }
-    const Category = await fetch(process.env.NEXT_PUBLIC_API_URL + "/ticket/category", {
+    const Employee = await fetch(process.env.NEXT_PUBLIC_API_URL + "/ticket/employee", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
-    const res = await Category.json();
+    const res = await Employee.json();
     if (res?.error) {
       return {
         success: false,
-        message: res?.msg || "Failed to fetch category",
+        message: res?.msg || "Failed to fetch employee",
       };
     }
     if (!res?.data) {
       return {
         success: false,
-        message: "Category data not found",
+        message: "Employee data not found",
       };
     }
     return {
@@ -39,142 +39,12 @@ export async function fetchCategory() {
     console.log("Login error:", error);
     return {
       success: false,
-      message: "Failed to fetch category",
-    };
-  }
-}
-export async function fetchAllCategory() {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth-token")?.value;
-    if (!token) {
-      return {
-        success: false,
-        message: "Authentication token not found",
-      };
-    }
-    const Category = await fetch(process.env.NEXT_PUBLIC_API_URL + "/ticket/category/all", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const res = await Category.json();
-    if (res?.error) {
-      return {
-        success: false,
-        message: res?.msg || "Failed to fetch category",
-      };
-    }
-    if (!res?.data) {
-      return {
-        success: false,
-        message: "Category data not found",
-      };
-    }
-    return {
-      success: true,
-      data: res?.data,
-    };
-  } catch (error) {
-    console.log("Login error:", error);
-    return {
-      success: false,
-      message: "Failed to fetch category",
+      message: "Failed to fetch employee",
     };
   }
 }
 
-export async function createCategory(formData: FormData) {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth-token")?.value;
-    if (!token) {
-      return {
-        success: false,
-        message: "Authentication token not found",
-      };
-    }
-    const Category = await fetch(
-      process.env.NEXT_PUBLIC_API_URL + "/ticket/category",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: formData.get("name") as string,
-        }),
-      }
-    );
-    const userData = await Category.json();
-    if (userData?.error) {
-      return {
-        success: false,
-        message: userData?.msg || "Failed to fetch user profile",
-      };
-    }
-  
-    return {
-      success: true,
-      data: userData?.data,
-    };
-  } catch (error) {
-    console.log("Login error:", error);
-    return {
-      success: false,
-      message: "Failed to create category",
-    };
-  }
-}
-export async function updateCategory(formData: FormData) {
-  try {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("auth-token")?.value;
-    if (!token) {
-      return {
-        success: false,
-        message: "Authentication token not found",
-      };
-    }
-    const Category = await fetch(
-      process.env.NEXT_PUBLIC_API_URL + "/ticket/category",
-      {
-      method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id: formData.get("id") ,
-          name: formData.get("name") as string,
-        }),
-      }
-    );
-    console.log("🚀 ~ updateCategory ~ Category:", Category)
-    const categoryData = await Category.json();
-    if (categoryData?.error) {
-      return {
-        success: false,
-        message: categoryData?.msg || "Failed to fetch category",
-      };
-    }
-  
-    return {
-      success: true,
-      data: categoryData?.data,
-    };
-  } catch (error) {
-    console.log("Login error:", error);
-    return {
-      success: false,
-      message: "Failed to update category",
-    };
-  }
-}
-export async function deleteCategory(formData: FormData) {
+export async function createEmployee(formData: FormData) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
@@ -187,33 +57,128 @@ export async function deleteCategory(formData: FormData) {
     const Category = await fetch(
       process.env.NEXT_PUBLIC_API_URL + "/ticket/employee",
       {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: formData.get("name") as string,
+          email : formData.get("email") as string,
+          phone : formData.get("phone") as string,
+          role : formData.get("role") as string,
+          password : formData.get("password") as string,
+          department : formData.get("department") as string
+        }),
+      }
+    );
+    const userData = await Category.json();
+    if (userData?.error) {
+      return {
+        success: false,
+        message: userData?.msg || "Failed to fetch employee",
+      };
+    }
+  
+    return {
+      success: true,
+      data: userData?.data,
+    };
+  } catch (error) {
+    console.log("Login error:", error);
+    return {
+      success: false,
+      message: "Failed to create employee",
+    };
+  }
+}
+export async function deleteEmployee(id: number) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth-token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        message: "Authentication token not found",
+      };
+    }
+    const Category = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + `/ticket/employee/${id}`,
+      {
         method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );  
+    const userData = await Category.json();
+    if (userData?.error) {
+      return {
+        success: false,
+        message: userData?.msg || "Failed to fetch employee",
+      };
+    }
+  
+    return {
+      success: true,
+      data: userData?.data,
+    };
+  } catch (error) {
+    console.log("Login error:", error);
+    return {
+      success: false,
+      message: "Failed to delete employee",
+    };
+  }
+}
+
+export async function updateEmployee( formData: FormData) {
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth-token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        message: "Authentication token not found",
+      };
+    }
+    const Category = await fetch(
+      process.env.NEXT_PUBLIC_API_URL + `/ticket/employee`,
+      {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           id: formData.get("id") as string,
+          name: formData.get("name") as string,
+          email : formData.get("email") as string,
+          phone : formData.get("phone") as string,
+          role : formData.get("role") as string,
+          password : formData.get("password") as string,
+          department : formData.get("department") as string
         }),
       }
     );
-    const employeeData = await Category.json();
-    if (employeeData?.error) {
+    const userData = await Category.json();
+    if (userData?.error) {
       return {
         success: false,
-        message: employeeData?.msg || "Failed to fetch employee",
+        message: userData?.msg || "Failed to fetch employee",
       };
     }
   
     return {
       success: true,
-      data: employeeData?.data,
+      data: userData?.data,
     };
   } catch (error) {
     console.log("Login error:", error);
     return {
       success: false,
-      message: "Failed to delete category",
+      message: "Failed to update employee",
     };
   }
-}
+} 
