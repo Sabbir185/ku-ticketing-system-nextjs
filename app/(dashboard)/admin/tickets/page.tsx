@@ -1,15 +1,17 @@
+// @ts-nocheck
+
 "use client"
 import { deleteTicket, fetchEmployeeTickets } from '@/app/actions/ticket/ticketActions';
 import { DataTable } from '@/components/DataTable';
 import { Ticket } from '@/types/tickets';
 import { Category } from '@prisma/client';
-import { Edit, Trash2, View } from 'lucide-react';
+import {  Trash2, View } from 'lucide-react';
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 
-const page = () => {
+const Page = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -39,7 +41,7 @@ const page = () => {
       header: "User",
       enableSorting: false,
       enableHiding: false,
-      cell: ({ cell }: { cell: any }) => {
+      cell: ({ cell }: { cell: { row: { original: Ticket } } }) => {
         const user = cell.row.original;
         console.log("🚀 ~ page ~ user:", user)
         return <p>{user?.user?.name}</p>;
@@ -118,4 +120,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page

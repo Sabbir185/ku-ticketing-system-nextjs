@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
     const ticketUser = await prisma.user.findUnique({
       where: { id: ticket?.userId },
     })
-    const { data, error } = await sendEmail({
+    const {  error } = await sendEmail({
       from: process.env.FROM_EMAIL!,
       to: [ticketUser?.email],
       subject: `Reply to Your Ticket #${ticket?.id}`,
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, msg: "Ticket created successfully" }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("🚨 POST /ticket/add error:", error);
     return NextResponse.json(
       { error: true, msg: error.message || "Failed to create ticket" },

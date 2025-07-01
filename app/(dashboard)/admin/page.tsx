@@ -1,14 +1,13 @@
 "use client";
-import { fetchEmployeeTickets, getDashboard } from "@/app/actions/ticket/ticketActions";
+import {  getDashboard } from "@/app/actions/ticket/ticketActions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Ticket } from "@/types/tickets";
 import { CheckCircle,  TicketIcon, Users } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 
 const Page = () => {
-    const [dashboardData, setDashboardData] = useState<any>(null);
+    const [dashboardData, setDashboardData] = useState(null);
     console.log("🚀 ~ Page ~ dashboardData:", dashboardData)
   
 

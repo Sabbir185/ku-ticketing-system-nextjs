@@ -11,7 +11,7 @@ interface EmployeeDashboardProps {
   onViewTicket: (ticket: Ticket) => void;
 }
 
-const EmployeeDashboard = ({ user, tickets, onViewTicket }: EmployeeDashboardProps) => {
+const EmployeeDashboard = ({  tickets, onViewTicket }: EmployeeDashboardProps) => {
   const assignedTickets = tickets
   const openTickets = tickets.filter(ticket => ticket.status === 'open');
   const closedTickets = tickets.filter(ticket => ticket.status === 'closed');

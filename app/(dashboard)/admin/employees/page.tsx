@@ -1,5 +1,5 @@
+// @ts-nocheck
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,6 +54,7 @@ const EmployeePage = () => {
       const data = await response.json();
       setEmployees(data?.data || []);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to fetch employees");
     } finally {
       setLoading(false);

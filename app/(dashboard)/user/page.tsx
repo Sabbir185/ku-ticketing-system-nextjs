@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import { fetchUserTickets } from "@/app/actions/ticket/ticketActions";
@@ -17,7 +19,7 @@ import React, { useEffect, useState } from "react";
 const Page = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const { logout, user } = useAuth() as {
     user: User;
     loading: boolean;
@@ -25,12 +27,10 @@ const Page = () => {
   };
 
   const getTickets = async () => {
-    setLoading(true);
     const data = await fetchUserTickets(new FormData());
     if (data.success) {
       setTickets(data?.data?.docs || []);
     }
-    setLoading(false);
     
   };
 

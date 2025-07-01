@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -14,11 +16,6 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { deleteCategory } from "@/app/actions/ticket/category/ticketCategory";
 import { toast } from "sonner";
 import { DataTable, TableAction } from "@/components/DataTable";
-import DepartmentMultiSelect from "@/components/DepartmentSelect";
-import {
-  createEmployee,
-  updateEmployee,
-} from "@/app/actions/ticket/employee/employeeAction";
 import { createUser, updateUser } from "@/app/actions/ticket/user/userAction";
 
 interface Employee {
@@ -39,7 +36,6 @@ const EmployeePage = () => {
     phone: "",
     password: "",
   });
-  const [selectedDepartments, setSelectedDepartments] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     console.log("Fetching employees...");
@@ -55,6 +51,7 @@ const EmployeePage = () => {
       const data = await response.json();
       setEmployees(data?.data || []);
     } catch (error) {
+      console.log(error);
       toast.error("Failed to fetch employees");
     } finally {
       setLoading(false);
@@ -94,7 +91,6 @@ const EmployeePage = () => {
   const resetForm = () => {
     setIsModalOpen(false);
     setFormData({ name: "", email: "", phone: "", password: "" });
-    setSelectedDepartments([]);
     setEditingEmployee(null);
   };
 

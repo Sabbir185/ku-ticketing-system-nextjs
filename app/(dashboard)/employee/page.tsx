@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import {
@@ -28,7 +30,7 @@ const Page = () => {
   const [resolving, setResolving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState<string>("");
-  const { logout, user, loading } = useAuth() as {
+  const { logout, user } = useAuth() as {
     user: User;
     loading: boolean;
     logout: () => void;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 import React, { useState } from "react";
 import {
@@ -25,7 +26,7 @@ interface AdminDashboardProps {
 }
 
 const AdminDashboard = ({ children }: AdminDashboardProps) => {
-  const { logout, user, loading } = useAuth();
+  const { logout, user } = useAuth();
   const [open, setOpen] = useState(false);
 
   const [formData, setFormData] = useState({

@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       });
     }
    
-    const { data, error } = await sendEmail({
+    const {  error } = await sendEmail({
       from: process.env.FROM_EMAIL!,
       to: [email],
       subject: "Ticket System - Your OTP Code",

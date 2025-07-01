@@ -6,7 +6,6 @@ import { z } from "zod";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { sendEmail } from "@/lib/resend";
-import { use } from "react";
 
 const ticketSchema = z.object({
   title: z.string().min(3),
@@ -83,7 +82,7 @@ export async function POST(req: NextRequest) {
 
     // Send email to user
 
-    const { data, error } = await sendEmail({
+    const {  error } = await sendEmail({
       from: process.env.FROM_EMAIL!,
       to: [user.email],
       subject: "Ticket Submitted Successfully",
@@ -113,7 +112,7 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true, data: ticket }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("🚨 POST /ticket/add error:", error);
     return NextResponse.json(
       { error: true, msg: error.message || "Failed to create ticket" },
@@ -133,7 +132,21 @@ export async function GET(req: NextRequest) {
       );
     }
 
+    // check request id 
+
+
     const { searchParams } = new URL(req.url);
+    if(searchParams.get("id")) {
+      const ticket = await prisma.ticket.findUnique({
+        where: { id: Number(searchParams.get("id")) },
+        include: {
+          category: true,
+          user: true,
+          employee: true,
+        },
+      });
+      return NextResponse.json({ error: false, data: ticket }, { status: 200 });
+    }
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
     const skip = (page - 1) * limit;

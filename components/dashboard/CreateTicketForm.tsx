@@ -38,7 +38,7 @@ const CreateTicketForm = ({
   const [file, setFile] = useState<File | null>(null);
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
-  const [AllCategory, setAllCategory] = useState<any[]>([]);
+  const [AllCategory, setAllCategory] = useState([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchAllCategoryWithoutPagination = async () => {
@@ -105,7 +105,7 @@ const CreateTicketForm = ({
               <Label htmlFor="priority">Priority</Label>
               <Select
                 value={priority}
-                onValueChange={(value) => setPriority(value as any)}
+                onValueChange={(value) => setPriority(value as "low" | "medium" | "high")}
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select priority" />

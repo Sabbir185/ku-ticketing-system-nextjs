@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Users, Ticket as TicketIcon, BarChart3, Settings, User2 } from "lucide-react";
+import { Users, Ticket as TicketIcon, BarChart3 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,

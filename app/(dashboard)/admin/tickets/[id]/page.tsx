@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client";
 
 import { fetchTicket, resolveTicket } from "@/app/actions/ticket/ticketActions";

@@ -88,7 +88,7 @@ export async function deleteTicket(formData : FormData) {
   }
 }
 
-export async function fetchUserTickets(formData : FormData) {
+export async function fetchUserTickets() {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get("auth-token")?.value;
@@ -182,7 +182,7 @@ export async function fetchTicket(id: string) {
       };
     }
     const Category = await fetch(
-      process.env.NEXT_PUBLIC_API_URL + `/ticket/${id}`,
+      process.env.NEXT_PUBLIC_API_URL + `/ticket?id=${id}`,
       {
         method: "GET",
         headers: {
