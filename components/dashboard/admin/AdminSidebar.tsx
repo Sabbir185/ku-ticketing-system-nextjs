@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Users, Ticket as TicketIcon, BarChart3, Settings } from "lucide-react";
+import { Users, Ticket as TicketIcon, BarChart3, Settings, User2 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -35,17 +35,23 @@ const AdminSidebar = () => {
       icon: Users,
     },
     {
+      id: "users",
+      title: "Users",
+      link: "/admin/users",
+      icon: Users,
+    },
+    {
       id: "categories",
       title: "Categories",
       link: "/admin/categories",
       icon: TicketIcon,
     },
-    {
-      id: "profile",
-      title: "Profile",
-      link: "/admin/profile",
-      icon: Settings,
-    },
+    // {
+    //   id: "profile",
+    //   title: "Profile",
+    //   link: "/admin/profile",
+    //   icon: Settings,
+    // },
   ];
 
   return (

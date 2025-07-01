@@ -39,7 +39,7 @@ const Page = () => {
     <div className="space-y-6">
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+        <Card className="border-none bg-slate-100">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Tickets</CardTitle>
             <TicketIcon className="h-4 w-4 text-muted-foreground" />
@@ -49,7 +49,7 @@ const Page = () => {
           </CardContent>
         </Card>
       
-        <Card>
+        <Card className="border-none bg-slate-100">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">In Progress</CardTitle>
             <Users className="h-4 w-4 text-blue-500" />
@@ -60,7 +60,7 @@ const Page = () => {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="border-none bg-slate-100">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Resolved</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-500" />
@@ -75,7 +75,7 @@ const Page = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card className="border-none bg-slate-100">
           <CardHeader>
             <CardTitle>Tickets by Priority</CardTitle>
           </CardHeader>
@@ -92,7 +92,7 @@ const Page = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none bg-slate-100">
           <CardHeader>
             <CardTitle>Status Distribution</CardTitle>
           </CardHeader>

@@ -11,12 +11,16 @@ import { toast } from 'sonner';
 
 const page = () => {
     const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     const getTickets = async () => {
+      setLoading(true);
       const data = await fetchEmployeeTickets();
       if (data.success) {
         setTickets(data?.data || []);
+        setLoading(false);
       }
+      setLoading(false);
     };
   
     useEffect(() => {
@@ -102,11 +106,11 @@ const page = () => {
   return (
      <div className="space-y-4">
              <DataTable
-                    title="tickets"
+                    title="All tickets"
                     data={tickets}
                     columns={columns}
                     rowActions={rowActions}
-                    // isLoading={loading}
+                    isLoading={loading}
                     // tableActions={tableActions}
                     showSerialNumbers
                   />

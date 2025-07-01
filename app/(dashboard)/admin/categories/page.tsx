@@ -110,7 +110,7 @@ const CategoryManagement = () => {
   const tableActions: TableAction[] = [
     {
       label: (
-        <Button className="flex items-center gap-2">
+        <Button className="flex items-center gap-2 cursor-pointer">
           <Plus className="h-4 w-4" /> Add Category
         </Button>
       ),

@@ -80,9 +80,19 @@ const TicketDetailsPage = () => {
       </button>
 
       {/* Ticket Overview */}
-      <div className="space-y-2 border rounded-lg p-5 shadow-sm bg-white relative">
+      <div className="space-y-2 border-gray-50 rounded-lg p-5 shadow-sm bg-white relative">
         <h2 className="text-2xl font-semibold text-gray-800">{ticket.title}</h2>
-        <p className="text-gray-600">{ticket.description}</p>
+        <p className="text-gray-600 my-7">{ticket.description}</p>
+        {ticket?.replyFile && (
+          <a
+            href={ticket.replyFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-700 underline"
+          >
+            View / Download File
+          </a>
+        )}
         <p>
           Created:{" "}
           {new Date(ticket.createdAt).toLocaleString("en-US", {
@@ -104,7 +114,7 @@ const TicketDetailsPage = () => {
       {/* Info Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {/* Created By */}
-        <div className="border rounded-lg p-4 bg-white shadow-sm">
+        <div className="border-gray-50 rounded-lg p-4 bg-white shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-700">Created By</h3>
           <p className="text-sm">{ticket.user?.name}</p>
           <p className="text-sm text-muted-foreground">{ticket.user?.email}</p>
@@ -112,7 +122,7 @@ const TicketDetailsPage = () => {
         </div>
 
         {/* Assigned Employee */}
-        <div className="border rounded-lg p-4 bg-white shadow-sm">
+        <div className="border-gray-50 rounded-lg p-4 bg-white shadow-sm">
           <h3 className="font-semibold mb-2 text-gray-700">
             Assigned Employee
           </h3>
@@ -128,7 +138,7 @@ const TicketDetailsPage = () => {
 
       {/* Reply Form */}
       {ticket.status !== "closed" && (
-        <div className="border rounded-lg p-5 bg-white shadow-sm">
+        <div className="border-gray-50 rounded-lg p-5 bg-white shadow-sm">
           <h3 className="font-semibold text-lg mb-4 text-gray-800">
             Add Reply & Resolve
           </h3>
@@ -164,12 +174,35 @@ const TicketDetailsPage = () => {
 
             <Button
               type="submit"
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto cursor-pointer"
               disabled={resolving}
             >
               {resolving ? "Resolving..." : "Mark as Resolved"}
             </Button>
           </form>
+        </div>
+      )}
+      {ticket.status === "closed" && (
+        <div className="border-gray-50 rounded-lg p-5 bg-white shadow-sm">
+          <h3 className="font-semibold text-lg mb-4 text-gray-800">
+            Ticket Resolved
+          </h3>
+          <p className="text-gray-600">{ticket.reply}</p>
+          {ticket?.replyFile && (
+            <a
+              href={ticket.replyFile}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-700 underline"
+            >
+              View / Download File
+            </a>
+          )}
+          {ticket?.reply && (
+            <div className="text-sm text-gray-500">
+              <p>Replied: {new Date(ticket.updatedAt).toLocaleString()}</p>
+            </div>
+          )}
         </div>
       )}
     </div>

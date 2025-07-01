@@ -1,21 +1,19 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { User } from '@/types/tickets';
-import { Badge } from '../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { Label } from '@radix-ui/react-label';
-import { Input } from '../ui/input';
-import { User as UserIcon } from 'lucide-react';
-import { profileUpdate } from '@/app/actions/profile';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { User } from "@/types/tickets";
+import { Badge } from "../ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "../ui/input";
+import { User as UserIcon } from "lucide-react";
+import { profileUpdate } from "@/app/actions/profile";
+import { toast } from "sonner";
 interface HeaderProps {
   user: User;
   onLogout: () => void;
 }
 
 const Header = ({ user, onLogout }: HeaderProps) => {
-  console.log("🚀 ~ Header ~ user:", user)
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: user.name,
@@ -41,7 +39,7 @@ const Header = ({ user, onLogout }: HeaderProps) => {
     if (response?.success) {
       toast.success(response?.message || "Profile updated successfully");
       // fetchUser();
-    }else{
+    } else {
       toast.error(response?.message || "Failed to update profile");
     }
     setOpen(false);
@@ -59,9 +57,12 @@ const Header = ({ user, onLogout }: HeaderProps) => {
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
-            <div className="bg-gray-200 p-2 rounded-full" onClick={() => setOpen(true)}>
-                <UserIcon size={20} />
-              </div>
+            <div
+              className="bg-gray-200 p-2 rounded-full cursor-pointer"
+              onClick={() => setOpen(true)}
+            >
+              <UserIcon size={20} />
+            </div>
             <Button variant="outline" onClick={onLogout}>
               Logout
             </Button>
