@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import path from "path";
 import { prisma } from "@/lib/prisma";
+import { sendEmail } from "@/lib/resend";
 export async function POST(req: NextRequest) {
   try {
     const user = await verifyAuth(req);
@@ -37,6 +38,44 @@ export async function POST(req: NextRequest) {
         status: "closed",
       },
     });
+    // Get ticket 
+    const ticket = await prisma.ticket.findUnique({
+      where: { id: Number(formData.get("id")) },
+      include: {
+        category: true,
+      },
+    })
+    // get ticket user
+    const ticketUser = await prisma.user.findUnique({
+      where: { id: ticket?.userId },
+    })
+    const { data, error } = await sendEmail({
+      from: process.env.FROM_EMAIL!,
+      to: [ticketUser?.email],
+      subject: `Reply to Your Ticket #${ticket?.id}`,
+      html: `
+    <div style="font-family: Arial, sans-serif;  margin: 0 auto;">
+      <h2 style="color: #333;">Ticket Management System</h2>
+      <p>Hi ${ticketUser?.name},</p>
+      <p>We've replied to your ticket:</p>
+      <div style="background-color: #f9fafb; padding: 16px; border-left: 4px solid #16a34a; margin: 16px 0;">
+        <strong>${ticket?.category?.name}</strong><br/>
+        <p style="margin-top: 12px;">${reply}</p>
+      </div>
+      <p style="color: #666;">You can respond to this message or manage the ticket from your dashboard.</p>
+      <br/>
+      <p style="color: #999; font-size: 12px;">Thanks for your patience!</p>
+    </div>
+  `,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { status: 500, error: true, msg: "Failed to send OTP email" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true, msg: "Ticket created successfully" }, { status: 201 });
   } catch (error: any) {

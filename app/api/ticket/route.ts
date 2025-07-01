@@ -5,12 +5,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { writeFile } from "fs/promises";
 import path from "path";
+import { sendEmail } from "@/lib/resend";
+import { use } from "react";
 
 const ticketSchema = z.object({
-    title: z.string().min(3),
-    description: z.string().min(5),
-    priority: z.string().optional(),
-    categoryId: z.number().optional()
+  title: z.string().min(3),
+  description: z.string().min(5),
+  priority: z.string().optional(),
+  categoryId: z.number().optional()
 });
 // CREATE new category
 // export async function uploadFileToCloudinary(file: File) {
@@ -78,6 +80,37 @@ export async function POST(req: NextRequest) {
         file: filePath, // 📎 Save the uploaded file URL
       },
     });
+
+    // Send email to user
+
+    const { data, error } = await sendEmail({
+      from: process.env.FROM_EMAIL!,
+      to: [user.email],
+      subject: "Ticket Submitted Successfully",
+      html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #333;">Ticket Management System</h2>
+      <p>Hi ${user.name},</p>
+      <p>We have received your ticket titled:</p>
+      <div style="background-color: #f9fafb; padding: 16px; border-left: 4px solid #2563eb; margin: 16px 0;">
+        <strong>${ticket.title}</strong><br/>
+        <span style="color: #666;">${ticket.description}</span>
+      </div>
+      <p style="color: #666;">Your ticket ID is <strong>#${ticket.id}</strong>. You can track its status anytime from your dashboard.</p>
+      <p style="color: #666;">We’ll get back to you as soon as possible.</p>
+      <br/>
+      <p style="color: #999; font-size: 12px;">Thank you for contacting us!</p>
+    </div>
+  `,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return NextResponse.json(
+        { status: 500, error: true, msg: "Failed to send OTP email" },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true, data: ticket }, { status: 201 });
   } catch (error: any) {
@@ -156,7 +189,7 @@ export async function GET(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-        const body = await req.json();
+    const body = await req.json();
     const { id } = body;
     const user = await verifyAuth(req);
     if (!user) {
